@@ -6,25 +6,17 @@ part 'news_item_model.g.dart';
 @JsonSerializable(explicitToJson: true, anyMap: true)
 class NewsItemModel {
   final String title;
-  final String? author;
-  final DateTime published_date;
-  final String? link;
-  final String? clean_url;
-  final String excerpt;
-  final String summary;
-  final String? rights;
-  final String media;
+  final DateTime publish_date;
+  final String? url;
+  final String text;
+  final String image;
 
   NewsItemModel({
     required this.title,
-    this.author,
-    required this.published_date,
-    this.link,
-    this.clean_url,
-    required this.excerpt,
-    required this.summary,
-    this.rights,
-    required this.media,
+    required this.publish_date,
+    this.url,
+    required this.text,
+    required this.image,
   });
   factory NewsItemModel.fromJson(dynamic json) => _$NewsItemModelFromJson(json);
 
@@ -32,27 +24,21 @@ class NewsItemModel {
 
   static NewsItem toEntity(NewsItemModel model) {
     return NewsItem(
-      excerpt: model.excerpt,
-      media: model.media,
-      published_date: model.published_date,
-      summary: model.summary,
       title: model.title,
-      link: model.link,
-      clean_url: model.clean_url,
-      rights: model.rights,
+      text: model.text,
+      image: model.image,
+      publish_date: model.publish_date,
+      url: model.url,
     );
   }
 
   static NewsItemModel toModel(NewsItem entity) {
     return NewsItemModel(
-      excerpt: entity.excerpt,
-      media: entity.media,
-      published_date: entity.published_date,
-      summary: entity.summary,
       title: entity.title,
-      link: entity.link,
-      clean_url: entity.clean_url,
-      rights: entity.rights,
+      image: entity.image,
+      publish_date: entity.publish_date,
+      url: entity.url,
+      text: entity.text,
     );
   }
 }

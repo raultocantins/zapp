@@ -8,25 +8,17 @@ part of 'news_item_model.dart';
 
 NewsItemModel _$NewsItemModelFromJson(Map json) => NewsItemModel(
       title: json['title'] as String,
-      author: json['author'] as String?,
-      published_date: DateTime.parse(json['published_date'] as String),
-      link: json['link'] as String?,
-      clean_url: json['clean_url'] as String?,
-      excerpt: json['excerpt'] as String,
-      summary: json['summary'] as String,
-      rights: json['rights'] as String?,
-      media: json['media'] as String,
+      publish_date: DateTime.parse(json['publish_date'] as String),
+      url: json['url'] as String?,
+      text: json['text'] as String,
+      image: json['image'] as String,
     );
 
 Map<String, dynamic> _$NewsItemModelToJson(NewsItemModel instance) =>
     <String, dynamic>{
       'title': instance.title,
-      'author': instance.author,
-      'published_date': instance.published_date.toIso8601String(),
-      'link': instance.link,
-      'clean_url': instance.clean_url,
-      'excerpt': instance.excerpt,
-      'summary': instance.summary,
-      'rights': instance.rights,
-      'media': instance.media,
+      'publish_date': instance.publish_date.toIso8601String(),
+      'url': instance.url,
+      'text': instance.text,
+      'image': instance.image,
     };

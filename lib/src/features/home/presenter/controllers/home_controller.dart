@@ -66,16 +66,15 @@ abstract class _HomeControllerBase with Store {
       if (tags.tags.isEmpty) {
         changeNews(r);
       } else {
-        List<NewsItem> newsData = (news?.articles ?? []);
-        newsData.addAll(r.articles);
+        List<NewsItem> newsData = (news?.news ?? []);
+        newsData.addAll(r.news);
         changeNews(
           NewsEntity(
-            status: r.status,
-            total_hits: r.total_hits,
+            available: r.available,
+            number: r.number,
+            offset: r.offset,
             page: r.page,
-            total_pages: r.total_pages,
-            page_size: r.page_size,
-            articles: newsData,
+            news: newsData,
           ),
         );
       }
@@ -104,8 +103,8 @@ abstract class _HomeControllerBase with Store {
   }
 
   nextPagination(NewsEntity newsEntity) {
-    if (newsEntity.total_hits > tags.tags.length &&
-        page <= newsEntity.total_pages) {
+    if (newsEntity.available > tags.tags.length &&
+        newsEntity.offset <= newsEntity.available) {
       page++;
     }
   }

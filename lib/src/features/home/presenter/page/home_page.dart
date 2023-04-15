@@ -107,21 +107,17 @@ class _HomePageState extends State<HomePage> {
                         width: double.infinity,
                         child: PageView.builder(
                           controller: pageController,
-                          itemCount: controller.news?.articles.length ?? 0,
+                          itemCount: controller.news?.news.length ?? 0,
                           itemBuilder: (context, index) {
                             return SingleChildScrollView(
                               child: PageNews(
                                   title:
-                                      controller.news?.articles[index].title ??
-                                          "",
-                                  description: controller
-                                          .news?.articles[index].summary ??
-                                      "",
+                                      controller.news?.news[index].title ?? "",
+                                  description:
+                                      controller.news?.news[index].text ?? "",
                                   image:
-                                      controller.news?.articles[index].media ??
-                                          "",
-                                  link: controller.news?.articles[index].link ??
-                                      "",
+                                      controller.news?.news[index].image ?? "",
+                                  link: controller.news?.news[index].url ?? "",
                                   moreInfo: (link) =>
                                       controller.moreInfoRedirect(link)),
                             );

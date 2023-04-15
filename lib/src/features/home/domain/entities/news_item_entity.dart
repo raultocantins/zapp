@@ -1,23 +1,15 @@
 class NewsItem {
   final String title;
-  final String? author;
-  final DateTime published_date;
-  final String? link;
-  final String? clean_url;
-  final String excerpt;
-  final String summary;
-  final String? rights;
-  final String media;
+  final DateTime publish_date;
+  final String? url;
+  final String text;
+  final String image;
 
   NewsItem({
     required this.title,
-    this.author,
-    required this.published_date,
-    this.link,
-    this.clean_url,
-    required this.excerpt,
-    required this.summary,
-    this.rights,
-    required this.media,
+    required this.publish_date,
+    this.url,
+    required this.text,
+    required this.image,
   });
 }

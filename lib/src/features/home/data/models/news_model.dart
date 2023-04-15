@@ -8,41 +8,38 @@ part 'news_model.g.dart';
 
 @JsonSerializable(explicitToJson: true, anyMap: true)
 class NewsModel {
-  final String status;
-  final int total_hits;
+  final int available;
   final int page;
-  final int total_pages;
-  final int page_size;
-  final List<NewsItemModel> articles;
+  final int offset;
+  final int number;
+  final List<NewsItemModel> news;
 
   NewsModel(
-      {required this.status,
-      required this.total_hits,
+      {required this.available,
       required this.page,
-      required this.total_pages,
-      required this.page_size,
-      required this.articles});
+      required this.offset,
+      required this.number,
+      required this.news});
   factory NewsModel.fromJson(dynamic json) => _$NewsModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$NewsModelToJson(this);
 
   static NewsEntity toEntity(NewsModel model) {
     return NewsEntity(
-        articles: model.articles.map((e) => NewsItemModel.toEntity(e)).toList(),
+        news: model.news.map((e) => NewsItemModel.toEntity(e)).toList(),
         page: model.page,
-        page_size: model.page_size,
-        status: model.status,
-        total_hits: model.total_hits,
-        total_pages: model.total_pages);
+        available: model.available,
+        number: model.number,
+        offset: model.offset);
   }
 
   static NewsModel toModel(NewsEntity entity) {
     return NewsModel(
-        articles: entity.articles.map((e) => NewsItemModel.toModel(e)).toList(),
-        page: entity.page,
-        page_size: entity.page_size,
-        status: entity.status,
-        total_hits: entity.total_hits,
-        total_pages: entity.total_pages);
+      news: entity.news.map((e) => NewsItemModel.toModel(e)).toList(),
+      page: entity.page,
+      available: entity.available,
+      number: entity.number,
+      offset: entity.offset,
+    );
   }
 }

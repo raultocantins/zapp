@@ -41,6 +41,22 @@ mixin _$HomeController on _HomeControllerBase, Store {
     });
   }
 
+  late final _$tagsAtom =
+      Atom(name: '_HomeControllerBase.tags', context: context);
+
+  @override
+  TagsEntity get tags {
+    _$tagsAtom.reportRead();
+    return super.tags;
+  }
+
+  @override
+  set tags(TagsEntity value) {
+    _$tagsAtom.reportWrite(value, super.tags, () {
+      super.tags = value;
+    });
+  }
+
   late final _$_HomeControllerBaseActionController =
       ActionController(name: '_HomeControllerBase', context: context);
 
@@ -67,6 +83,17 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
+  dynamic changePage(int value) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.changePage');
+    try {
+      return super.changePage(value);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic dispose() {
     final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
         name: '_HomeControllerBase.dispose');
@@ -81,7 +108,8 @@ mixin _$HomeController on _HomeControllerBase, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
-news: ${news}
+news: ${news},
+tags: ${tags}
     ''';
   }
 }
