@@ -4,7 +4,8 @@ import 'package:zapp/src/features/home/domain/repositories/get_news_repository.d
 import '../entities/news_entity.dart';
 
 abstract class GetNews {
-  Future<Either<String, NewsEntity>> call({String? tag});
+  Future<Either<String, NewsEntity>> call(
+      {String? tag, required int page, required int pageSize});
 }
 
 class GetNewsImpl implements GetNews {
@@ -13,7 +14,8 @@ class GetNewsImpl implements GetNews {
   GetNewsImpl({required this.getNewsRepository});
 
   @override
-  Future<Either<String, NewsEntity>> call({String? tag}) async {
-    return await getNewsRepository(tag: tag);
+  Future<Either<String, NewsEntity>> call(
+      {String? tag, required int page, required int pageSize}) async {
+    return await getNewsRepository(tag: tag, page: page, pageSize: pageSize);
   }
 }

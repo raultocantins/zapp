@@ -14,12 +14,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomeController controller = GetIt.I.get<HomeController>();
+  PageController pageController = PageController();
   int tagSelectedIndex = 0;
   @override
   void initState() {
     super.initState();
+    pageController.addListener(() {
+      if (pageController.position.pixels >=
+              (pageController.position.maxScrollExtent) &&
+          !(controller.isLoading) &&
+          (controller.tags.tags.isNotEmpty)) {
+        controller.fetchNews(tag: controller.tags.tags[tagSelectedIndex]);
+      }
+    });
+
     controller = GetIt.I.get<HomeController>();
-    controller.fetchNews();
+    controller.fetchNews(tag: controller.tags.tags[0]);
   }
 
   @override
@@ -45,37 +55,41 @@ class _HomePageState extends State<HomePage> {
         return SizedBox(
           child: Column(
             children: [
-              SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.tags.tags.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            tagSelectedIndex = index;
-                          });
-                          controller.fetchNews(
-                              tag: controller.tags.tags[index]);
-                        },
-                        child: Chip(
-                          backgroundColor: tagSelectedIndex == index
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.secondary,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 8),
-                          label: Text(
-                            controller.tags.tags[index].label,
-                            style: const TextStyle(color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: SizedBox(
+                  height: 50,
+                  width: double.infinity,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: controller.tags.tags.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              tagSelectedIndex = index;
+                            });
+
+                            controller.clearAndFetch(
+                                tag: controller.tags.tags[index]);
+                          },
+                          child: Chip(
+                            backgroundColor: tagSelectedIndex == index
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.secondary,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            label: Text(
+                              controller.tags.tags[index].label,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(
@@ -84,12 +98,15 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: controller.isLoading
                     ? const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
                       )
                     : SizedBox(
                         height: 950,
                         width: double.infinity,
                         child: PageView.builder(
+                          controller: pageController,
                           itemCount: controller.news?.articles.length ?? 0,
                           itemBuilder: (context, index) {
                             return SingleChildScrollView(

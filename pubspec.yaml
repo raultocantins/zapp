@@ -43,6 +43,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   dio: ^5.1.1
   url_launcher: ^6.1.10
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:

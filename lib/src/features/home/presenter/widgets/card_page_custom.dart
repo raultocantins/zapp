@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PageNews extends StatelessWidget {
@@ -24,36 +25,21 @@ class PageNews extends StatelessWidget {
             height: 350,
             width: double.infinity,
             child: ClipRRect(
-              child: Image.network(
-                image,
-                fit: BoxFit.fill,
-                frameBuilder: (BuildContext context, Widget child, int? frame,
-                    bool wasSynchronouslyLoaded) {
-                  if (wasSynchronouslyLoaded) {
-                    return child;
-                  }
-
-                  return AnimatedOpacity(
-                    opacity: frame == null ? 0 : 1,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                    child: child,
-                  );
-                },
-                loadingBuilder:
-                    (context, child, ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white10,
-                    ),
-                  );
-                },
+                child: CachedNetworkImage(
+              imageUrl: image,
+              fit: BoxFit.fill,
+              placeholder: (context, url) => Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.primary),
+                ),
               ),
-            )),
+              errorWidget: (context, url, error) => Icon(
+                  Icons.electrical_services_rounded,
+                  color: Theme.of(context).colorScheme.secondary),
+            ))),
         const SizedBox(
           height: 20,
         ),
