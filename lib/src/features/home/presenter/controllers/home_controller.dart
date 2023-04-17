@@ -21,21 +21,16 @@ abstract class _HomeControllerBase with Store {
 
   int pageSize = 10;
 
-  int page = 10;
+  int page = 1;
 
   @observable
   NewsEntity? news;
 
   @observable
-  TagsEntity tags = TagsEntity([
-    TagEntity("Tecnologia"),
-    TagEntity("Política"),
-    TagEntity("Esportes"),
-    TagEntity("Entretenimento"),
-    TagEntity("Economia"),
-    TagEntity("Saúde"),
-    TagEntity("Meio ambiente")
-  ]);
+  LanguagesEnum language = LanguagesEnum.PT;
+
+  @observable
+  TagsEntity? tags;
 
 //CHANGE LOADING
   @action
@@ -49,21 +44,34 @@ abstract class _HomeControllerBase with Store {
     news = value;
   }
 
-  //CHANGE NEWS
+  //CHANGE LANGUAGE
+  @action
+  changeLanguage(LanguagesEnum value) {
+    changeTags(Tags().getTags(value));
+    language = value;
+  }
+
+  //CHANGE PAGE
   @action
   changePage(int value) {
     page = value;
   }
 
+  //CHANGE TAGS
+  @action
+  changeTags(TagsEntity value) {
+    tags = value;
+  }
+
   fetchNews({TagEntity? tag}) async {
     changeIsLoading(true);
     final result = await getNews(
-      tag: tag?.label ?? "",
-      page: page,
-      pageSize: pageSize,
-    );
+        tag: tag?.label ?? "",
+        page: page,
+        pageSize: pageSize,
+        language: language.getLabel());
     result.fold((l) => null, (r) {
-      if (tags.tags.isEmpty) {
+      if (tags?.tags.isEmpty ?? false) {
         changeNews(r);
       } else {
         List<NewsItem> newsData = (news?.news ?? []);
@@ -73,7 +81,6 @@ abstract class _HomeControllerBase with Store {
             available: r.available,
             number: r.number,
             offset: r.offset,
-            page: r.page,
             news: newsData,
           ),
         );
@@ -87,10 +94,10 @@ abstract class _HomeControllerBase with Store {
   clearAndFetch({TagEntity? tag}) async {
     changeIsLoading(true);
     final result = await getNews(
-      tag: tag?.label ?? "",
-      page: page,
-      pageSize: pageSize,
-    );
+        tag: tag?.label ?? "",
+        page: page,
+        pageSize: pageSize,
+        language: language.getLabel());
     result.fold((l) => null, (r) {
       changeNews(r);
       nextPagination(r);
@@ -103,7 +110,7 @@ abstract class _HomeControllerBase with Store {
   }
 
   nextPagination(NewsEntity newsEntity) {
-    if (newsEntity.available > tags.tags.length &&
+    if (newsEntity.available > (tags?.tags.length ?? 0) &&
         newsEntity.offset <= newsEntity.available) {
       page++;
     }
@@ -113,5 +120,21 @@ abstract class _HomeControllerBase with Store {
   dispose() {
     isLoading = false;
     news = null;
+    page = 1;
+  }
+}
+
+enum LanguagesEnum { PT, EN }
+
+extension LanguagesToString on LanguagesEnum {
+  String getLabel() {
+    switch (this) {
+      case LanguagesEnum.PT:
+        return "pt";
+      case LanguagesEnum.EN:
+        return "en";
+      default:
+        return "en";
+    }
   }
 }

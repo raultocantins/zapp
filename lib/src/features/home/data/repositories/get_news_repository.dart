@@ -10,10 +10,13 @@ class GetNewsRepositoryImpl implements GetNewsRepository {
   GetNewsRepositoryImpl({required this.getNewsDatasource});
   @override
   Future<Either<String, NewsEntity>> call(
-      {String? tag, required int page, required int pageSize}) async {
+      {String? tag,
+      required int page,
+      required int pageSize,
+      required String language}) async {
     try {
-      var result =
-          await getNewsDatasource(tag: tag, page: page, pageSize: pageSize);
+      var result = await getNewsDatasource(
+          tag: tag, page: page, pageSize: pageSize, language: language);
 
       NewsEntity listEventEntity = NewsModel.toEntity(result);
 

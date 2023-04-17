@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:zapp/src/features/home/domain/entities/tag_entity.dart';
 
 import '../controllers/home_controller.dart';
 import '../widgets/card_page_custom.dart';
@@ -16,20 +17,29 @@ class _HomePageState extends State<HomePage> {
   HomeController controller = GetIt.I.get<HomeController>();
   PageController pageController = PageController();
   int tagSelectedIndex = 0;
+  int pageIndex = 0;
+  List<LanguagesEnum> languages = [LanguagesEnum.EN, LanguagesEnum.PT];
   @override
   void initState() {
     super.initState();
+    controller.changeTags(Tags().getTags(controller.language));
     pageController.addListener(() {
       if (pageController.position.pixels >=
               (pageController.position.maxScrollExtent) &&
           !(controller.isLoading) &&
-          (controller.tags.tags.isNotEmpty)) {
-        controller.fetchNews(tag: controller.tags.tags[tagSelectedIndex]);
+          ((controller.tags?.tags ?? []).isNotEmpty)) {
+        controller.fetchNews(tag: controller.tags?.tags[tagSelectedIndex]);
       }
     });
 
     controller = GetIt.I.get<HomeController>();
-    controller.fetchNews(tag: controller.tags.tags[0]);
+    controller.fetchNews(tag: controller.tags?.tags[0]);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,12 +53,27 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.black),
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_rounded,
-                color: Colors.black,
-              ))
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            child: DropdownButton(
+              icon: const Icon(Icons.language),
+              items: languages
+                  .map(
+                    (e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e.getLabel()),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (v) {
+                controller.changeLanguage(v ?? controller.language);
+              },
+              elevation: 1,
+              value: controller.language,
+            ),
+          )
         ],
       ),
       body: Observer(builder: (context) {
@@ -62,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                   width: double.infinity,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: controller.tags.tags.length,
+                    itemCount: controller.tags?.tags.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -73,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                             });
 
                             controller.clearAndFetch(
-                                tag: controller.tags.tags[index]);
+                                tag: controller.tags?.tags[index]);
                           },
                           child: Chip(
                             backgroundColor: tagSelectedIndex == index
@@ -82,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 8),
                             label: Text(
-                              controller.tags.tags[index].label,
+                              controller.tags?.tags[index].label ?? "",
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
@@ -96,7 +121,8 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               Expanded(
-                child: controller.isLoading
+                child: controller.isLoading &&
+                        ((controller.news?.news ?? []).isEmpty)
                     ? const Center(
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
@@ -107,6 +133,11 @@ class _HomePageState extends State<HomePage> {
                         width: double.infinity,
                         child: PageView.builder(
                           controller: pageController,
+                          onPageChanged: (i) {
+                            setState(() {
+                              pageIndex = i;
+                            });
+                          },
                           itemCount: controller.news?.news.length ?? 0,
                           itemBuilder: (context, index) {
                             return SingleChildScrollView(
@@ -118,6 +149,9 @@ class _HomePageState extends State<HomePage> {
                                   image:
                                       controller.news?.news[index].image ?? "",
                                   link: controller.news?.news[index].url ?? "",
+                                  publish_date: controller
+                                          .news?.news[index].publish_date ??
+                                      DateTime.now(),
                                   moreInfo: (link) =>
                                       controller.moreInfoRedirect(link)),
                             );
@@ -129,6 +163,15 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          pageController.jumpToPage(pageIndex + 1);
+        },
+        child: const Icon(
+          Icons.arrow_forward,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }

@@ -5,7 +5,10 @@ import '../entities/news_entity.dart';
 
 abstract class GetNews {
   Future<Either<String, NewsEntity>> call(
-      {String? tag, required int page, required int pageSize});
+      {String? tag,
+      required int page,
+      required int pageSize,
+      required String language});
 }
 
 class GetNewsImpl implements GetNews {
@@ -15,7 +18,11 @@ class GetNewsImpl implements GetNews {
 
   @override
   Future<Either<String, NewsEntity>> call(
-      {String? tag, required int page, required int pageSize}) async {
-    return await getNewsRepository(tag: tag, page: page, pageSize: pageSize);
+      {String? tag,
+      required int page,
+      required int pageSize,
+      required String language}) async {
+    return await getNewsRepository(
+        tag: tag, page: page, pageSize: pageSize, language: language);
   }
 }

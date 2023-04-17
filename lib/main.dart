@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zapp/src/features/splash/splash_page.dart';
 
 import 'config/getIt/register_dependencies.dart';
 import 'src/features/home/presenter/page/home_page.dart';
@@ -33,7 +34,10 @@ class MyApp extends StatelessWidget {
           onPrimaryContainer: Color(0xff10375C),
         ),
       ),
-      home: const HomePage(),
+      routes: {
+        "/home": (context) => const HomePage(),
+      },
+      home: const SplashPage(),
     );
   }
 }

@@ -41,17 +41,33 @@ mixin _$HomeController on _HomeControllerBase, Store {
     });
   }
 
+  late final _$languageAtom =
+      Atom(name: '_HomeControllerBase.language', context: context);
+
+  @override
+  LanguagesEnum get language {
+    _$languageAtom.reportRead();
+    return super.language;
+  }
+
+  @override
+  set language(LanguagesEnum value) {
+    _$languageAtom.reportWrite(value, super.language, () {
+      super.language = value;
+    });
+  }
+
   late final _$tagsAtom =
       Atom(name: '_HomeControllerBase.tags', context: context);
 
   @override
-  TagsEntity get tags {
+  TagsEntity? get tags {
     _$tagsAtom.reportRead();
     return super.tags;
   }
 
   @override
-  set tags(TagsEntity value) {
+  set tags(TagsEntity? value) {
     _$tagsAtom.reportWrite(value, super.tags, () {
       super.tags = value;
     });
@@ -83,11 +99,33 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
+  dynamic changeLanguage(LanguagesEnum value) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.changeLanguage');
+    try {
+      return super.changeLanguage(value);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic changePage(int value) {
     final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
         name: '_HomeControllerBase.changePage');
     try {
       return super.changePage(value);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic changeTags(TagsEntity value) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.changeTags');
+    try {
+      return super.changeTags(value);
     } finally {
       _$_HomeControllerBaseActionController.endAction(_$actionInfo);
     }
@@ -109,6 +147,7 @@ mixin _$HomeController on _HomeControllerBase, Store {
     return '''
 isLoading: ${isLoading},
 news: ${news},
+language: ${language},
 tags: ${tags}
     ''';
   }
